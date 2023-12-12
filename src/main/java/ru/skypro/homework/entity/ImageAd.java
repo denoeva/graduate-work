@@ -11,9 +11,9 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "image_ads")
+@Table(name = "image_ad")
 @Data
-public class ImageAds {
+public class ImageAd {
     @Id
     private String id;
     private byte[] image;

@@ -30,11 +30,11 @@ public class Ad {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "image_ad_id")
-    private ImageAds image;
+    private ImageAd image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users user;
+    private Users users;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments;

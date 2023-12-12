@@ -10,6 +10,8 @@ import ru.skypro.homework.dto.auth_register.Role;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class UserInfoDto {
     private Integer id;
     private String email;

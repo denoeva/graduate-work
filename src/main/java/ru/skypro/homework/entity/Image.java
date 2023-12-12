@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 /**
  * Class for saving images
- *
  */
 
 @Entity
