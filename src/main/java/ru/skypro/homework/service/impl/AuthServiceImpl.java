@@ -5,19 +5,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.Register;
+import ru.skypro.homework.dto.auth_register.Register;
+import ru.skypro.homework.dto.user.SetNewPasswordDto;
+import ru.skypro.homework.entity.Users;
+import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
+import ru.skypro.homework.service.UserService;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
+    private final UserService userService;
+    private final UserRepository userRepository;
+
 
     public AuthServiceImpl(UserDetailsManager manager,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           UserService userService,
+                           UserRepository userRepository) {
         this.manager = manager;
         this.encoder = passwordEncoder;
+        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -44,4 +55,13 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
 
+    @Override
+    public void updatePassword(SetNewPasswordDto newPassDto) {
+        Users user = userService.findAuthUser().orElseThrow(/*UserNotFoundException::new*/);
+        boolean pass = encoder.matches(newPassDto.getCurrentPassword(), user.getPassword());
+        if (pass) {
+            user.setPassword(encoder.encode(newPassDto.getNewPassword()));
+            userRepository.save(user);
+        }
+    }
 }

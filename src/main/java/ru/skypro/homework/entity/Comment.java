@@ -1,0 +1,54 @@
+package ru.skypro.homework.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+/**
+ * Class for comments
+ */
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "comments")
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id", nullable = false)
+    private Integer pk;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_id")
+    private Users users;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ad_id")
+    private Ad ad;
+
+    @Column(name = "created_at", nullable = false)
+    LocalDateTime createdAt;
+
+    @Column(name = "text", nullable = false)
+    private String text;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(pk, comment.pk) && Objects.equals(users, comment.users) && Objects.equals(ad, comment.ad) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(text, comment.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pk, users, ad, createdAt, text);
+    }
+}
