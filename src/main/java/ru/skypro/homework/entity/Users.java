@@ -1,7 +1,7 @@
 package ru.skypro.homework.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 import ru.skypro.homework.dto.auth_register.Role;
 
 import javax.persistence.*;
