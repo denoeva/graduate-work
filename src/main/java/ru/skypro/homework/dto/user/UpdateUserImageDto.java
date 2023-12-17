@@ -1,6 +1,6 @@
 package ru.skypro.homework.dto.user;
 
-import lombok.Data;
+import lombok.*;
 import ru.skypro.homework.entity.ImageAd;
 
 /**
@@ -8,6 +8,10 @@ import ru.skypro.homework.entity.ImageAd;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class UpdateUserImageDto {
     private String id;
     private byte[] image;

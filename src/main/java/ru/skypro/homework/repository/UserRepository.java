@@ -7,7 +7,7 @@ import ru.skypro.homework.entity.Users;
 import java.util.Optional;
 
 /**
- * Repository for for working with users through the database
+ * Repository for working with users through the database
  */
 @Repository
 public interface UserRepository extends CrudRepository<Users, Integer> {
