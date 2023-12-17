@@ -1,6 +1,8 @@
 package ru.skypro.homework.dto.ads;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.skypro.homework.entity.ImageAd;
 
 /**
@@ -8,6 +10,8 @@ import ru.skypro.homework.entity.ImageAd;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateAdsImageDto {
     private String id;
     private byte[] image;

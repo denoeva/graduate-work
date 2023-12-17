@@ -1,13 +1,16 @@
 package ru.skypro.homework.dto.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.skypro.homework.entity.Users;
+import lombok.NoArgsConstructor;
 
 /**
  * Wrapper class to changing user data
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateUserDto {
     private String firstName;
     private String lastName;
