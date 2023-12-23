@@ -20,6 +20,7 @@ import ru.skypro.homework.service.UserService;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UsersController {
+
     private final ImageService imageService;
     private final UserService userService;
     private final AuthService authService;

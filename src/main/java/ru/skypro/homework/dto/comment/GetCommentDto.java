@@ -1,6 +1,8 @@
 package ru.skypro.homework.dto.comment;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class GetCommentDto {
     private int author;
     private String authorImage;
