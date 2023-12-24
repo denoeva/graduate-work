@@ -12,6 +12,10 @@ import ru.skypro.homework.dto.auth_register.Login;
 import ru.skypro.homework.dto.auth_register.Register;
 import ru.skypro.homework.service.AuthService;
 
+/**
+ * The class-controller for running endpoints for registration and authentication users
+ */
+
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -20,6 +24,9 @@ public class AuthController {
 
     private final AuthService authService;
 
+    /**
+     * The method for user's authentication with checking input data
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Login login) {
         if (authService.login(login.getUsername(), login.getPassword())) {
@@ -29,6 +36,9 @@ public class AuthController {
         }
     }
 
+    /**
+     * The method for registration to user with checking input data
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Register register) {
         if (authService.register(register)) {
