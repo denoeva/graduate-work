@@ -24,7 +24,6 @@ public class Comment {
     @Column(name = "comment_id", nullable = false)
     private Integer pk;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private Users users;
@@ -44,7 +43,7 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(pk, comment.pk) && Objects.equals(users, comment.users) && Objects.equals(ad, comment.ad) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(text, comment.text);
+        return Objects.equals(pk, comment.pk) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(text, comment.text);
     }
 
     @Override

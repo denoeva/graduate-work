@@ -1,67 +1,57 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.auth_register.Register;
 import ru.skypro.homework.dto.user.SetNewPasswordDto;
-import ru.skypro.homework.entity.Users;
-import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
-import ru.skypro.homework.service.UserService;
+import ru.skypro.homework.security.UserDetailsServiceImpl;
+
+/**
+ * The class with methods to login and register users
+ */
 
 @Service
 public class AuthServiceImpl implements AuthService {
+    private final UserDetailsServiceImpl userService;
+    private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    private final UserDetailsManager manager;
-    private final PasswordEncoder encoder;
-    private final UserService userService;
-    private final UserRepository userRepository;
-
-
-    public AuthServiceImpl(UserDetailsManager manager,
-                           PasswordEncoder passwordEncoder,
-                           UserService userService,
-                           UserRepository userRepository) {
-        this.manager = manager;
-        this.encoder = passwordEncoder;
+    public AuthServiceImpl(UserDetailsServiceImpl userService,
+                           PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.userRepository = userRepository;
+        this.encoder = passwordEncoder;
     }
 
+    /**
+     * The method to login users
+     */
     @Override
     public boolean login(String userName, String password) {
-        if (!manager.userExists(userName)) {
+        if (!userService.userExists(userName)) {
             return false;
         }
-        UserDetails userDetails = manager.loadUserByUsername(userName);
+        UserDetails userDetails = userService.loadUserByUsername(userName);
         return encoder.matches(password, userDetails.getPassword());
     }
 
+
+    /**
+     * The method to register users
+     */
     @Override
     public boolean register(Register register) {
-        if (manager.userExists(register.getUsername())) {
+        if (userService.userExists(register.getUsername())) {
             return false;
         }
-        manager.createUser(
-                User.builder()
-                        .passwordEncoder(this.encoder::encode)
-                        .password(register.getPassword())
-                        .username(register.getUsername())
-                        .roles(register.getRole().name())
-                        .build());
+        String password = encoder.encode(register.getPassword());
+        userService.createUser(register, password);
         return true;
     }
 
     @Override
-    public void updatePassword(SetNewPasswordDto newPassDto) {
-        Users user = userService.findAuthUser().orElseThrow(/*UserNotFoundException::new*/);
-        boolean pass = encoder.matches(newPassDto.getCurrentPassword(), user.getPassword());
-        if (pass) {
-            user.setPassword(encoder.encode(newPassDto.getNewPassword()));
-            userRepository.save(user);
-        }
+    public void updatePassword(SetNewPasswordDto newPassDto, String name) {
+
     }
 }

@@ -10,12 +10,12 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     @Override
-    public UserInfoDto getInfoAboutUser() {
+    public UserInfoDto getInfoAboutUser(String name) {
         return null;
     }
 
     @Override
-    public UserInfoDto updateInfoAboutUser(UserInfoDto userInfoDto) {
+    public UserInfoDto updateInfoAboutUser(UserInfoDto userInfoDto, String name) {
         return null;
     }
 
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserImage(MultipartFile image) {
+    public void updateUserImage(MultipartFile image, String name) {
 
     }
 }
