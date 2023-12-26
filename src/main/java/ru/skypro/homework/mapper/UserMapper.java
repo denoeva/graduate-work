@@ -21,34 +21,38 @@ public abstract class  UserMapper {
     ImageRepository imageRepository;
 
 
-    abstract UserInfoDto userToUserInfoDto(Users user);
+    public abstract UserInfoDto userToUserInfoDto(Users user);
 
-    abstract UpdateUserDto userToUpdateUserDto (Users user);
+    public abstract UpdateUserDto userToUpdateUserDto (Users user);
     @Mapping(target = "currentPassword", source = "user.password")
-    abstract SetNewPasswordDto userToSetNewPasswordDto (Users user);
+    public abstract SetNewPasswordDto userToSetNewPasswordDto (Users user);
 
-    abstract UpdateUserImageDto userToUpdateUserImageDto (Users user);
+    public abstract UpdateUserImageDto userToUpdateUserImageDto (Users user);
 
-    abstract Users userInfoDtoToUser (UserInfoDto userInfoDto);
+    public abstract Users userInfoDtoToUser (UserInfoDto userInfoDto);
 
-    abstract Users updateUserDtoToUSer (UpdateUserDto updateUserDto, @MappingTarget Users users);
+    public abstract Users updateUserDtoToUSer (UpdateUserDto updateUserDto, @MappingTarget Users users);
     @Mapping(target = "password", source = "setNewPasswordDto.newPassword")
-    abstract Users setNewPasswordDtoToUser (SetNewPasswordDto setNewPasswordDto, @MappingTarget Users users);
+    public abstract Users setNewPasswordDtoToUser (SetNewPasswordDto setNewPasswordDto, @MappingTarget Users users);
 
-    abstract Users updateUserImageDtoToUser (UpdateUserImageDto updateUserImageDto, @MappingTarget Users users);
+    public abstract Users updateUserImageDtoToUser (UpdateUserImageDto updateUserImageDto, @MappingTarget Users users);
 
-     String map(Image value) {
-        return value.getId();
+    protected String map(Image value) {
+        if (value != null) {
+            return "/users/" + value.getId() + "/image";
+        } else {
+            return "";
+        }
     }
 
-    byte[] mapToBytes(Image value) {
+    protected byte[] mapToBytes(Image value) {
         return value.getImage();
     }
-    Image mapToImage (String value) {
+    protected Image mapToImage (String value) {
         return imageRepository.findById(value).orElseThrow(RuntimeException::new);
     }
 
-    Image mapFromByte(byte[] value) {
+    protected Image mapFromByte(byte[] value) {
          return imageRepository.findByImage(value);
     }
 }

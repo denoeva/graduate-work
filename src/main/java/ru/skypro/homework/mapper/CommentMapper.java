@@ -17,8 +17,8 @@ public abstract class CommentMapper {
     @Mapping(target = "author", source = "comment.users.id")
     @Mapping(target = "authorFirstName", source = "comment.users.firstName")
     @Mapping(target = "authorImage", source = "comment.users.image.id")
-    abstract GetCommentDto commentToGetCommentDto (Comment comment);
-    abstract Comment getCommentDtoToComment (GetCommentDto getCommentDto);
+    public abstract GetCommentDto commentToGetCommentDto (Comment comment);
+    public abstract Comment getCommentDtoToComment (GetCommentDto getCommentDto);
 
     public GetAllCommentsDto getAllCommentsToGetAllCommentsDto(List<Comment> comments) {
         GetAllCommentsDto getAllCommentsDto = new GetAllCommentsDto();
@@ -32,8 +32,8 @@ public abstract class CommentMapper {
     }
 
 
-    abstract CreateOrUpdateCommentDto commentToCreateOrUpdateCommentDto (Comment comment);
+    public abstract CreateOrUpdateCommentDto commentToCreateOrUpdateCommentDto (Comment comment);
 
-    abstract Comment createOrUpdateCommentDtoToComment (CreateOrUpdateCommentDto createOrUpdateCommentDto);
+    public abstract Comment createOrUpdateCommentDtoToComment (CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
 }

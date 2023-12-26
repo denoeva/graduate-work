@@ -11,9 +11,9 @@ import ru.skypro.homework.entity.Users;
 )
 public abstract class AuthMapper {
 
-    abstract Login userToLogin (Users users);
+    public abstract Login userToLogin (Users users);
 
-    abstract Users loginToUser (Login login, @MappingTarget Users users);
+    public abstract Users loginToUser (Login login, @MappingTarget Users users);
 
-    abstract Users registerToUser (Register register);
+    public abstract Users registerToUser (Register register);
 }
