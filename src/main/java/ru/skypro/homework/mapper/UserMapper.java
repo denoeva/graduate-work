@@ -39,7 +39,7 @@ public abstract class  UserMapper {
 
     protected String map(Image value) {
         if (value != null) {
-            return "/users/" + value.getId() + "/image";
+            return "/users/image/" + value.getId();
         } else {
             return "";
         }
