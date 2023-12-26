@@ -70,18 +70,14 @@ public class CommentServiceImpl implements CommentService {
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                     Authentication authentication) {
         if (authentication.isAuthenticated()) {
-            String username = authentication.getName();
-
             Ad getAd = adsRepository.findAdByPk(adId).orElseThrow(AdNotFoundException::new);
-            Users meUsers = userRepository.findByUsername(username)
+            Users user = userRepository.findByUsername(authentication.getName())
                     .orElseThrow(UserNotFoundException::new);
-            Comment newComment = new Comment();
-            newComment.setUsers(meUsers);
+            Comment newComment =  commentMapper.createOrUpdateCommentDtoToComment(createOrUpdateCommentDto);
+            newComment.setUsers(user);
             newComment.setAd(getAd);
-            newComment.setText(createOrUpdateCommentDto.getText());
             newComment.setCreatedAt(LocalDateTime.now());
-            GetCommentDto getCommentDto = GetCommentDto.fromComment(commentRepository.save(newComment));
-            return getCommentDto;
+            return commentMapper.commentToGetCommentDto(commentRepository.save(newComment));
         } else {
             throw new AccessErrorException();
         }
@@ -90,12 +86,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Integer adId, Integer commentId, Authentication authentication) {
         if (authentication.isAuthenticated()) {
-            Comment findComment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-            if (!adId.equals(findComment.getAd().getPk())) {
+            Comment commentToDelete = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+            if (!adId.equals(commentToDelete.getAd().getPk())) {
                 throw new CommentNotFoundException();
             } else {
-                if (isAdminOrOwnerComment(authentication, findComment.getUsers().getUsername())) {
-                    commentRepository.delete(findComment);
+                if (isAdminOrOwnerComment(authentication, commentToDelete.getUsers().getUsername())) {
+                    commentRepository.delete(commentToDelete);
                 } else {
                     throw new AccessErrorException();
                 }
@@ -111,19 +107,13 @@ public class CommentServiceImpl implements CommentService {
                                        CreateOrUpdateCommentDto createOrUpdateCommentDto,
                                        Authentication authentication) {
         if (authentication.isAuthenticated()) {
-            Comment findComment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-            if (!adId.equals(findComment.getAd().getPk())) {
-                throw new CommentNotFoundException();
+            Comment commentToUpdate = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+            if (adId.equals(commentToUpdate.getAd().getPk()) && isAdminOrOwnerComment(authentication, commentToUpdate.getUsers().getUsername())) {
+                    commentToUpdate.setText(createOrUpdateCommentDto.getText());
+                    commentToUpdate.setCreatedAt(LocalDateTime.now());
+                    return commentMapper.commentToGetCommentDto(commentRepository.save(commentToUpdate));
             } else {
-                if (isAdminOrOwnerComment(authentication, findComment.getUsers().getUsername())) {
-                    findComment.setText(createOrUpdateCommentDto.getText());
-                    findComment.setCreatedAt(LocalDateTime.now());
-                    GetCommentDto commentDTO = GetCommentDto.fromComment(commentRepository.save(findComment));
-                    return commentDTO;
-                } else {
-                    throw new AccessErrorException();
-                }
-
+                throw new AccessErrorException();
             }
         } else {
             throw new AccessErrorException();
