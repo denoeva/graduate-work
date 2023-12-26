@@ -6,7 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.ads.*;
+import ru.skypro.homework.dto.ads.CreateOrUpdateAdsDto;
+import ru.skypro.homework.dto.ads.GetAdsDto;
+import ru.skypro.homework.dto.ads.GetAllAdsDto;
+import ru.skypro.homework.dto.ads.GetFullInfoAdsDto;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.ImageAd;
 import ru.skypro.homework.entity.Users;
@@ -22,7 +25,6 @@ import ru.skypro.homework.service.AdsService;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -117,14 +119,11 @@ public class AdsServiceImpl implements AdsService {
     public GetAdsDto updateAdDto(Integer id, CreateOrUpdateAdsDto adsDto, Authentication authentication) {
         Ad updatedAd = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);
         if (isAdminOrOwnerAd(authentication, updatedAd.getUser().getUsername())) {
-            updatedAd.setTitle(updatedAd.getTitle());
-            updatedAd.setPrice(updatedAd.getPrice());
-            updatedAd.setDescription(updatedAd.getDescription());
-            adsRepository.save(updatedAd);
+            Ad adToUpdate = adsMapper.createOrUpdateAdsDtoToAd(adsDto, updatedAd);
+            return adsMapper.adsToDto(adsRepository.save(adToUpdate));
         } else {
             throw new AccessErrorException();
         }
-        return GetAdsDto.fromAd(updatedAd);
     }
 
     @Override
@@ -141,31 +140,31 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public UpdateAdsImageDto updateImageAdDto(int id, MultipartFile file, Authentication authentication) {
+    public void updateImageAdDto(int id, MultipartFile file, Authentication authentication) {
         Ad ad = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);
         if (isAdminOrOwnerAd(authentication, ad.getUser().getUsername())) {
             ImageAd image;
-            if (!Objects.isNull(ad.getImage())) {
+            if (ad.getImage() != null) {
                 image = imageAdRepository.findById(ad.getImage().getId()).orElse(new ImageAd());
             } else {
                 image = new ImageAd();
-                image.setId(ad.getPk().toString());
+                image.setId(UUID.randomUUID().toString());
             }
             try {
                 byte[] imageBytes = file.getBytes();
                 image.setImage(imageBytes);
             } catch (IOException e) {
-                throw new RuntimeException();
+                throw new RuntimeException("Failed to read image content" + e);
             }
-            ImageAd returnImage = imageAdRepository.save(image);
+            imageAdRepository.save(image);
             ad.setImage(image);
             adsRepository.save((ad));
-            return UpdateAdsImageDto.fromImageAds(returnImage);
         } else {
             throw new AccessErrorException();
         }
     }
 
+    //TODO remove
     private boolean isUser(Authentication authentication) {
         boolean isUser = authentication.getAuthorities()
                 .stream()
