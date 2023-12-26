@@ -27,14 +27,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+/**
+ * Service class to manage ads
+ */
 @Service
 public class AdsServiceImpl implements AdsService {
 
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
     private final ImageAdRepository imageAdRepository;
-
     private final AdsMapperImpl adsMapper;
 
     public AdsServiceImpl(AdsRepository adsRepository,
@@ -45,7 +46,9 @@ public class AdsServiceImpl implements AdsService {
         this.imageAdRepository = imageAdRepository;
         this.adsMapper = adsMapper;
     }
-
+    /**
+     * The method to check permission to execute operation
+     */
     private boolean isAdminOrOwnerAd(Authentication authentication, String ownerAd) {
         boolean isAdmin = authentication.getAuthorities()
                 .stream()
@@ -57,13 +60,18 @@ public class AdsServiceImpl implements AdsService {
 
         return isAdmin || isOwnerAd;
     }
-
+    /**
+     * The method to find all existing ads
+     */
     @Override
     public GetAllAdsDto getAllAdsDto() {
         List<Ad> adList = adsRepository.findAllAds();
         return adsMapper.adsToGetAllAdsDto(adList);
     }
 
+    /**
+     * The method to create new add
+     */
     @Override
     public GetAdsDto createAds(CreateOrUpdateAdsDto adsDto, MultipartFile imageFile, Authentication authentication) {
         if (authentication.isAuthenticated()) {
@@ -93,7 +101,9 @@ public class AdsServiceImpl implements AdsService {
             throw new AccessErrorException("Ad creation is not allowed to unauthorized user");
         }
     }
-
+    /**
+     * The method to get all information on add
+     */
     @Override
     public GetFullInfoAdsDto getFullAdDto(Integer id, Authentication authentication) {
         if (authentication.isAuthenticated()) {
@@ -103,7 +113,9 @@ public class AdsServiceImpl implements AdsService {
             throw new AccessErrorException("Ad information is not allowed to unauthorized user");
         }
     }
-
+    /**
+     * The method to remove add
+     */
     @Override
     public ResponseEntity<Void> removeAd(int id, Authentication authentication) {
         Ad deletedAd = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);
@@ -114,7 +126,9 @@ public class AdsServiceImpl implements AdsService {
             throw new AccessErrorException("Delete operation is not allowed");
         }
     }
-
+    /**
+     * The method to update existing ad
+     */
     @Override
     public GetAdsDto updateAdDto(Integer id, CreateOrUpdateAdsDto adsDto, Authentication authentication) {
         Ad updatedAd = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);
@@ -125,20 +139,26 @@ public class AdsServiceImpl implements AdsService {
             throw new AccessErrorException("Update operation is not allowed, insufficient permission");
         }
     }
-
+    /**
+     * The method to find all user ads
+     */
     @Override
     public GetAllAdsDto getAllUserAdsDto(Authentication authentication) {
         Users user = userRepository.findByUsername(authentication.getName()).orElseThrow(UserNotFoundException::new);
         List<Ad> allUserAds = adsRepository.getAdsMe(user.getId());
         return adsMapper.adsToGetAllAdsDto(allUserAds);
     }
-
+    /**
+     * The method to get ad image
+     */
     @Override
     public byte[] getImage(String id) {
         ImageAd image = imageAdRepository.findById(id).orElseThrow(ImageNotFoundException::new);
         return image.getImage();
     }
-
+    /**
+     * The method to update ad image
+     */
     @Override
     public void updateImageAdDto(int id, MultipartFile file, Authentication authentication) {
         Ad ad = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);

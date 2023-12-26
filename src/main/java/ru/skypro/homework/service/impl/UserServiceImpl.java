@@ -1,6 +1,5 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.UpdateUserDto;
@@ -16,26 +15,33 @@ import ru.skypro.homework.service.UserService;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ * Service class to manage users
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private ImageRepository imageRepository;
+    public UserServiceImpl(UserRepository userRepository, ImageRepository imageRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.imageRepository = imageRepository;
+        this.userMapper = userMapper;
+    }
 
-    @Autowired
-    private UserMapper userMapper;
-
-
+    /**
+     * The method to get user info
+     */
     @Override
     public UserInfoDto getInfoAboutUser(String userName) {
         Users user = userRepository.findByUsername(userName).orElseThrow(UserNotFoundException::new);
         return userMapper.userToUserInfoDto(user);
     }
-
+    /**
+     * The method to update user info
+     */
     @Override
     public UserInfoDto updateInfoAboutUser(UpdateUserDto userInfoDto, String userName) {
         Users user = userRepository.findByUsername(userName).orElseThrow(UserNotFoundException::new);
@@ -49,6 +55,9 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
+    /**
+     * The method to update user image
+     */
     @Override
     public void updateUserImage(MultipartFile newImage, String userName) {
         Users user = userRepository.findByUsername(userName).orElseThrow(UserNotFoundException::new);

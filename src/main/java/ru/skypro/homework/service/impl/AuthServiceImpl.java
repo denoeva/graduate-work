@@ -57,7 +57,9 @@ public class AuthServiceImpl implements AuthService {
         userService.createUser(register, password);
         return true;
     }
-
+    /**
+     * The method to update user password
+     */
     @Override
     public void updatePassword(SetNewPasswordDto newPassDto, String userName) {
         Users user = userRepository.findByUsername(userName).orElseThrow(UserNotFoundException::new);

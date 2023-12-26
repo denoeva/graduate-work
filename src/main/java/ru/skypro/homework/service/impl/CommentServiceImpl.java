@@ -1,6 +1,5 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -23,25 +22,28 @@ import ru.skypro.homework.service.CommentService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
+/**
+ * Service class to manage comments
+ */
 @Service
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    CommentMapper commentMapper;
+    private final CommentMapper commentMapper;
 
     public CommentServiceImpl(CommentRepository commentRepository,
                               AdsRepository adsRepository,
-                              UserRepository userRepository) {
+                              UserRepository userRepository, CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
+        this.commentMapper = commentMapper;
     }
-
+    /**
+     * The method to check permissions to manage comments
+     */
     private boolean isAdminOrOwnerComment(Authentication authentication, String ownerComment) {
         boolean isAdmin = authentication.getAuthorities()
                 .stream()
@@ -54,7 +56,9 @@ public class CommentServiceImpl implements CommentService {
         return isAdmin || isOwnerComment;
 
     }
-
+    /**
+     * The method to find all existing comments
+     */
     @Override
     public GetAllCommentsDto getComments(Integer adId, Authentication authentication) {
         if (authentication.isAuthenticated()) {
@@ -64,7 +68,9 @@ public class CommentServiceImpl implements CommentService {
             throw new AccessErrorException("Operation is not allowed to unauthorized users");
         }
     }
-
+    /**
+     * The method to add new comment
+     */
     @Override
     public GetCommentDto addComment(Integer adId,
                                     CreateOrUpdateCommentDto createOrUpdateCommentDto,
@@ -82,7 +88,9 @@ public class CommentServiceImpl implements CommentService {
             throw new AccessErrorException("Operation is not allowed to unauthorized users");
         }
     }
-
+    /**
+     * The method to delete comment
+     */
     @Override
     public void deleteComment(Integer adId, Integer commentId, Authentication authentication) {
         if (authentication.isAuthenticated()) {
@@ -101,7 +109,9 @@ public class CommentServiceImpl implements CommentService {
         }
 
     }
-
+    /**
+     * The method to update existing comment
+     */
     @Override
     public GetCommentDto updateComment(Integer adId, Integer commentId,
                                        CreateOrUpdateCommentDto createOrUpdateCommentDto,
