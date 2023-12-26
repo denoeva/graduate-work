@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public abstract class CommentMapper {
     @Mapping(target = "author", source = "comment.users.id")
     @Mapping(target = "authorFirstName", source = "comment.users.firstName")
-    @Mapping(target = "authorImage", source = "comment.users.image.id")
+    @Mapping(target = "authorImage", expression = "java(mapImage(comment))")
     public abstract GetCommentDto commentToGetCommentDto (Comment comment);
     public abstract Comment getCommentDtoToComment (GetCommentDto getCommentDto);
 
@@ -35,5 +35,13 @@ public abstract class CommentMapper {
     public abstract CreateOrUpdateCommentDto commentToCreateOrUpdateCommentDto (Comment comment);
 
     public abstract Comment createOrUpdateCommentDtoToComment (CreateOrUpdateCommentDto createOrUpdateCommentDto);
+
+    protected String mapImage (Comment comment) {
+        if (comment.getUsers().getImage() != null) {
+            return "/users/image/" + comment.getUsers().getImage().getId();
+        } else {
+            return "";
+        }
+    }
 
 }

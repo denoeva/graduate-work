@@ -164,13 +164,4 @@ public class AdsServiceImpl implements AdsService {
         }
     }
 
-    //TODO remove
-    private boolean isUser(Authentication authentication) {
-        boolean isUser = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList())
-                .contains("ROLE_USER");
-        return isUser;
-    }
 }
