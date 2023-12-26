@@ -1,6 +1,8 @@
 package ru.skypro.homework.dto.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.skypro.homework.dto.auth_register.Role;
 
 /**
@@ -10,8 +12,6 @@ import ru.skypro.homework.dto.auth_register.Role;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class UserInfoDto {
     private Integer id;
     private String email;

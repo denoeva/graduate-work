@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
             byte[] imageBytes = newImage.getBytes();
             image.setImage(imageBytes);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new RuntimeException("Failed to read image file" + e);
         }
         imageRepository.save(image);
         user.setImage(image);

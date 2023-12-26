@@ -81,7 +81,7 @@ public class AdsServiceImpl implements AdsService {
                 byte[] imageBytes = imageFile.getBytes();
                 image.setImage(imageBytes);
             } catch (IOException e) {
-                throw new RuntimeException();
+                throw new RuntimeException("Failed to read image file" + e);
             }
             ImageAd returnImage = imageAdRepository.save(image);
 
@@ -90,7 +90,7 @@ public class AdsServiceImpl implements AdsService {
             return adsMapper.adsToDto(adsRepository.save(ad));
 
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Ad creation is not allowed to unauthorized user");
         }
     }
 
@@ -100,7 +100,7 @@ public class AdsServiceImpl implements AdsService {
             Ad fullInfoAd = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);
             return adsMapper.adToGetFullInfoAdsDto(fullInfoAd);
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Ad information is not allowed to unauthorized user");
         }
     }
 
@@ -111,7 +111,7 @@ public class AdsServiceImpl implements AdsService {
             adsRepository.delete(deletedAd);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Delete operation is not allowed");
         }
     }
 
@@ -122,7 +122,7 @@ public class AdsServiceImpl implements AdsService {
             Ad adToUpdate = adsMapper.createOrUpdateAdsDtoToAd(adsDto, updatedAd);
             return adsMapper.adsToDto(adsRepository.save(adToUpdate));
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Update operation is not allowed, insufficient permission");
         }
     }
 
@@ -154,13 +154,13 @@ public class AdsServiceImpl implements AdsService {
                 byte[] imageBytes = file.getBytes();
                 image.setImage(imageBytes);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to read image content" + e);
+                throw new RuntimeException("Failed to read image file" + e);
             }
             imageAdRepository.save(image);
             ad.setImage(image);
             adsRepository.save((ad));
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Update operation is not allowed, insufficient permission");
         }
     }
 
