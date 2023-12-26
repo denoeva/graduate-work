@@ -15,9 +15,10 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetAdsDto {
-    private int pk;
     private int author;
     private String image;
+    private int pk;
+
     private int price;
     private String title;
 

@@ -1,9 +1,9 @@
 package ru.skypro.homework.entity;
 
 import lombok.Data;
-import javax.persistence.Id;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**

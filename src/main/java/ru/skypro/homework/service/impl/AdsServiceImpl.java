@@ -9,15 +9,21 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.ads.*;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.ImageAd;
+import ru.skypro.homework.entity.Users;
 import ru.skypro.homework.exceptions.AccessErrorException;
 import ru.skypro.homework.exceptions.AdNotFoundException;
+import ru.skypro.homework.exceptions.ImageNotFoundException;
+import ru.skypro.homework.exceptions.UserNotFoundException;
+import ru.skypro.homework.mapper.AdsMapperImpl;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.ImageAdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,12 +33,15 @@ public class AdsServiceImpl implements AdsService {
     private final UserRepository userRepository;
     private final ImageAdRepository imageAdRepository;
 
+    private final AdsMapperImpl adsMapper;
+
     public AdsServiceImpl(AdsRepository adsRepository,
                           UserRepository userRepository,
-                          ImageAdRepository imageAdRepository) {
+                          ImageAdRepository imageAdRepository, AdsMapperImpl adsMapper) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
         this.imageAdRepository = imageAdRepository;
+        this.adsMapper = adsMapper;
     }
 
     private boolean isAdminOrOwnerAd(Authentication authentication, String ownerAd) {
@@ -49,17 +58,48 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public GetAllAdsDto getAllAdsDto() {
-        return null;
+        List<Ad> adList = adsRepository.findAllAds();
+        return adsMapper.adsToGetAllAdsDto(adList);
     }
 
     @Override
-    public GetAdsDto createAds(CreateOrUpdateAdsDto adsDto, MultipartFile image, Authentication authentication) {
-        return null;
+    public GetAdsDto createAds(CreateOrUpdateAdsDto adsDto, MultipartFile imageFile, Authentication authentication) {
+        if (authentication.isAuthenticated()) {
+
+            //Ищем пользователя
+            Users user = userRepository.findByUsername(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
+            Ad ad = adsMapper.createOrUpdateAdsDtoToAd(adsDto, new Ad());
+            ad.setUser(user);
+
+
+            ImageAd image = new ImageAd();
+            image.setId(UUID.randomUUID().toString());
+            try {
+                byte[] imageBytes = imageFile.getBytes();
+                image.setImage(imageBytes);
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+            ImageAd returnImage = imageAdRepository.save(image);
+
+            ad.setImage(returnImage);
+
+            return adsMapper.adsToDto(adsRepository.save(ad));
+
+        } else {
+            throw new AccessErrorException();
+        }
     }
 
     @Override
     public GetFullInfoAdsDto getFullAdDto(Integer id, Authentication authentication) {
-        return null;
+        if (authentication.isAuthenticated()) {
+            Ad fullInfoAd = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);
+            return adsMapper.adToGetFullInfoAdsDto(fullInfoAd);
+        } else {
+            throw new AccessErrorException();
+        }
     }
 
     @Override
@@ -89,12 +129,15 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public GetAllAdsDto getAllUserAdsDto(Authentication authentication) {
-        return null;
+        Users user = userRepository.findByUsername(authentication.getName()).orElseThrow(UserNotFoundException::new);
+        List<Ad> allUserAds = adsRepository.getAdsMe(user.getId());
+        return adsMapper.adsToGetAllAdsDto(allUserAds);
     }
 
     @Override
     public byte[] getImage(String id) {
-        return new byte[0];
+        ImageAd image = imageAdRepository.findById(id).orElseThrow(ImageNotFoundException::new);
+        return image.getImage();
     }
 
     @Override

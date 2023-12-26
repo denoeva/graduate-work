@@ -19,10 +19,10 @@ public abstract class AdsMapper {
     @Autowired
     ImageAdRepository imageAdRepository;
     @Mapping(target = "author", source = "user.id")
-    abstract GetAdsDto adsToDto (Ad ad);
-    abstract Ad DtoToAd (GetAdsDto getAdsDto);
+    public abstract GetAdsDto adsToDto (Ad ad);
+    public abstract Ad DtoToAd (GetAdsDto getAdsDto);
 
-    abstract Ad createOrUpdateAdsDtoToAd (CreateOrUpdateAdsDto adsDto, @MappingTarget Ad ad);
+    public abstract Ad createOrUpdateAdsDtoToAd (CreateOrUpdateAdsDto adsDto, @MappingTarget Ad ad);
 
     public GetAllAdsDto adsToGetAllAdsDto (List<Ad> ads) {
         GetAllAdsDto getAllAdsDto = new GetAllAdsDto();
@@ -37,7 +37,8 @@ public abstract class AdsMapper {
     @Mapping(target = "authorFirstName", source = "user.firstName")
     @Mapping(target = "authorLastName", source = "user.lastName")
     @Mapping(target = "phone", source = "user.phone")
-    abstract GetFullInfoAdsDto adToGetFullInfoAdsDto (Ad ad);
+    @Mapping(target = "email", source = "user.username")
+    public abstract GetFullInfoAdsDto adToGetFullInfoAdsDto (Ad ad);
 
     public void updateAdsImageDtoToAd (UpdateAdsImageDto updateAdsImageDto) {
         ImageAd imageAd = imageAdRepository.findById(updateAdsImageDto.getId()).orElseThrow(RuntimeException::new);
@@ -47,7 +48,11 @@ public abstract class AdsMapper {
 
 
     protected String map(ImageAd value) {
-        return value.getId();
+        if (value != null) {
+            return "/ads/image/" + value.getId();
+        } else {
+            return "";
+        }
     }
 
     protected ImageAd mapImage(String value) {

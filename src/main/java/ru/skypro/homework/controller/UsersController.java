@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.user.SetNewPasswordDto;
+import ru.skypro.homework.dto.user.UpdateUserDto;
 import ru.skypro.homework.dto.user.UserInfoDto;
 import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.ImageService;
@@ -43,7 +44,7 @@ public class UsersController {
     }
 
     @PatchMapping("/me")
-    public UserInfoDto updateInfoAboutUser(@RequestBody @Valid UserInfoDto userInfoDto,
+    public UserInfoDto updateInfoAboutUser(@RequestBody @Valid UpdateUserDto userInfoDto,
                                            Authentication authentication) {
         return userService.updateInfoAboutUser(userInfoDto, authentication.getName());
     }

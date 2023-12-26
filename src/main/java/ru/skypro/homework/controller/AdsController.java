@@ -10,9 +10,6 @@ import ru.skypro.homework.dto.ads.CreateOrUpdateAdsDto;
 import ru.skypro.homework.dto.ads.GetAdsDto;
 import ru.skypro.homework.dto.ads.GetAllAdsDto;
 import ru.skypro.homework.dto.ads.GetFullInfoAdsDto;
-import ru.skypro.homework.dto.comment.CreateOrUpdateCommentDto;
-import ru.skypro.homework.dto.comment.GetAllCommentsDto;
-import ru.skypro.homework.dto.comment.GetCommentDto;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.ImageService;
@@ -81,7 +78,8 @@ public class AdsController {
      */
     @GetMapping("/me")
     public GetAllAdsDto getAdsForMe(Authentication authentication) {
-        return adsService.getAllUserAdsDto(authentication);
+        GetAllAdsDto getAllAdsDto = adsService.getAllUserAdsDto(authentication);
+        return getAllAdsDto;
     }
 
     /**
@@ -99,7 +97,7 @@ public class AdsController {
     /**
      * Getting image from ads
      */
-    @GetMapping(value = "/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, "image/*"})
+    @GetMapping(value = "/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, "image/*"})
     public byte[] getImage(@PathVariable("id") String id) {
         return adsService.getImage(id);
     }
