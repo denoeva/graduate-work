@@ -61,7 +61,7 @@ public class CommentServiceImpl implements CommentService {
             List<Comment> comments = commentRepository.findAllCommentsByAdId(adId);
            return commentMapper.getAllCommentsToGetAllCommentsDto(comments);
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Operation is not allowed to unauthorized users");
         }
     }
 
@@ -79,7 +79,7 @@ public class CommentServiceImpl implements CommentService {
             newComment.setCreatedAt(LocalDateTime.now());
             return commentMapper.commentToGetCommentDto(commentRepository.save(newComment));
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Operation is not allowed to unauthorized users");
         }
     }
 
@@ -93,11 +93,11 @@ public class CommentServiceImpl implements CommentService {
                 if (isAdminOrOwnerComment(authentication, commentToDelete.getUsers().getUsername())) {
                     commentRepository.delete(commentToDelete);
                 } else {
-                    throw new AccessErrorException();
+                    throw new AccessErrorException("Delete operation is not allowed, insufficient permission");
                 }
             }
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Operation is not allowed to unauthorized users");
         }
 
     }
@@ -113,10 +113,10 @@ public class CommentServiceImpl implements CommentService {
                     commentToUpdate.setCreatedAt(LocalDateTime.now());
                     return commentMapper.commentToGetCommentDto(commentRepository.save(commentToUpdate));
             } else {
-                throw new AccessErrorException();
+                throw new AccessErrorException("Update is not allowed, insufficient permission");
             }
         } else {
-            throw new AccessErrorException();
+            throw new AccessErrorException("Operation is not allowed to unauthorized users");
         }
     }
 }
