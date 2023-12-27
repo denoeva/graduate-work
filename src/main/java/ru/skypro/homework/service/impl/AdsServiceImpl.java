@@ -13,10 +13,7 @@ import ru.skypro.homework.dto.ads.GetFullInfoAdsDto;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.ImageAd;
 import ru.skypro.homework.entity.Users;
-import ru.skypro.homework.exceptions.AccessErrorException;
-import ru.skypro.homework.exceptions.AdNotFoundException;
-import ru.skypro.homework.exceptions.ImageNotFoundException;
-import ru.skypro.homework.exceptions.UserNotFoundException;
+import ru.skypro.homework.exceptions.*;
 import ru.skypro.homework.mapper.AdsMapperImpl;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.ImageAdRepository;
@@ -98,7 +95,7 @@ public class AdsServiceImpl implements AdsService {
             return adsMapper.adsToDto(adsRepository.save(ad));
 
         } else {
-            throw new AccessErrorException("Ad creation is not allowed to unauthorized user");
+            throw new UnauthorizedException("Ad creation is not allowed to unauthorized user");
         }
     }
     /**
@@ -110,7 +107,7 @@ public class AdsServiceImpl implements AdsService {
             Ad fullInfoAd = adsRepository.findAdByPk(id).orElseThrow(AdNotFoundException::new);
             return adsMapper.adToGetFullInfoAdsDto(fullInfoAd);
         } else {
-            throw new AccessErrorException("Ad information is not allowed to unauthorized user");
+            throw new UnauthorizedException("Ad information is not allowed to unauthorized user");
         }
     }
     /**
@@ -123,7 +120,7 @@ public class AdsServiceImpl implements AdsService {
             adsRepository.delete(deletedAd);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            throw new AccessErrorException("Delete operation is not allowed");
+            throw new AccessDeniedException("Delete operation is not allowed, insufficient permission");
         }
     }
     /**
@@ -136,7 +133,7 @@ public class AdsServiceImpl implements AdsService {
             Ad adToUpdate = adsMapper.createOrUpdateAdsDtoToAd(adsDto, updatedAd);
             return adsMapper.adsToDto(adsRepository.save(adToUpdate));
         } else {
-            throw new AccessErrorException("Update operation is not allowed, insufficient permission");
+            throw new AccessDeniedException("Update operation is not allowed, insufficient permission");
         }
     }
     /**
@@ -180,7 +177,7 @@ public class AdsServiceImpl implements AdsService {
             ad.setImage(image);
             adsRepository.save((ad));
         } else {
-            throw new AccessErrorException("Update operation is not allowed, insufficient permission");
+            throw new AccessDeniedException("Update operation is not allowed, insufficient permission");
         }
     }
 

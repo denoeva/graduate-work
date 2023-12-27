@@ -9,10 +9,7 @@ import ru.skypro.homework.dto.comment.GetCommentDto;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Users;
-import ru.skypro.homework.exceptions.AccessErrorException;
-import ru.skypro.homework.exceptions.AdNotFoundException;
-import ru.skypro.homework.exceptions.CommentNotFoundException;
-import ru.skypro.homework.exceptions.UserNotFoundException;
+import ru.skypro.homework.exceptions.*;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
@@ -65,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
             List<Comment> comments = commentRepository.findAllCommentsByAdId(adId);
            return commentMapper.getAllCommentsToGetAllCommentsDto(comments);
         } else {
-            throw new AccessErrorException("Operation is not allowed to unauthorized users");
+            throw new UnauthorizedException("Operation is not allowed to unauthorized users");
         }
     }
     /**
@@ -85,7 +82,7 @@ public class CommentServiceImpl implements CommentService {
             newComment.setCreatedAt(LocalDateTime.now());
             return commentMapper.commentToGetCommentDto(commentRepository.save(newComment));
         } else {
-            throw new AccessErrorException("Operation is not allowed to unauthorized users");
+            throw new UnauthorizedException("Operation is not allowed to unauthorized users");
         }
     }
     /**
@@ -101,11 +98,11 @@ public class CommentServiceImpl implements CommentService {
                 if (isAdminOrOwnerComment(authentication, commentToDelete.getUsers().getUsername())) {
                     commentRepository.delete(commentToDelete);
                 } else {
-                    throw new AccessErrorException("Delete operation is not allowed, insufficient permission");
+                    throw new AccessDeniedException("Delete operation is not allowed, insufficient permission");
                 }
             }
         } else {
-            throw new AccessErrorException("Operation is not allowed to unauthorized users");
+            throw new UnauthorizedException("Operation is not allowed to unauthorized users");
         }
 
     }
@@ -123,10 +120,10 @@ public class CommentServiceImpl implements CommentService {
                     commentToUpdate.setCreatedAt(LocalDateTime.now());
                     return commentMapper.commentToGetCommentDto(commentRepository.save(commentToUpdate));
             } else {
-                throw new AccessErrorException("Update is not allowed, insufficient permission");
+                throw new AccessDeniedException("Update is not allowed, insufficient permission");
             }
         } else {
-            throw new AccessErrorException("Operation is not allowed to unauthorized users");
+            throw new UnauthorizedException("Operation is not allowed to unauthorized users");
         }
     }
 }
