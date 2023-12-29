@@ -20,4 +20,5 @@ public class GetCommentDto {
     private LocalDateTime createdAt;
     private int pk;
     private String text;
+
 }

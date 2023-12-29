@@ -4,18 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- *Wrapper class to getting information about the advertisement
- */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetAdsDto {
-    private int author;
-    private String image;
+public class ExtendedAd {
     private int pk;
-
+    private String authorFirstName;
+    private String authorLastName;
+    private String description;
+    private String email;
+    private String image;
+    private String phone;
     private int price;
     private String title;
 

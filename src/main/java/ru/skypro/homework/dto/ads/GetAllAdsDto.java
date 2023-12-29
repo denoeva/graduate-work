@@ -17,8 +17,4 @@ public class GetAllAdsDto {
     private int count;
     private List<GetAdsDto> results;
 
-    public GetAllAdsDto(List<GetAdsDto> results) {
-        this.results = results;
-        this.count = results.size();
-    }
 }

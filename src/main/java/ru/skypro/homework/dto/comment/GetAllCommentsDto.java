@@ -11,9 +11,10 @@ import java.util.List;
  */
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class GetAllCommentsDto {
     private int count;
     private List<GetCommentDto> results;
+
 }

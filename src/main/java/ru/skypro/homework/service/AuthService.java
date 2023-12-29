@@ -6,5 +6,5 @@ import ru.skypro.homework.dto.user.SetNewPasswordDto;
 public interface AuthService {
     boolean login(String userName, String password);
     boolean register(Register register);
-    void updatePassword(SetNewPasswordDto newPassDto);
+    void updatePassword(SetNewPasswordDto newPassDto, String name);
 }
