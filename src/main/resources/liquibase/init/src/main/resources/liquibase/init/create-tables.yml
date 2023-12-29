@@ -1,0 +1,148 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Elena
+      changes:
+        - createTable:
+            tableName: image_ad
+            columns:
+              - column:
+                  name: id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: image
+                  type: bytea
+        - createTable:
+            tableName: image
+            columns:
+              - column:
+                  name: id
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: image
+                  type: bytea
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: image_id
+                  type: varchar(255)
+                  constraints:
+                    foreignKeyName: image_id
+                    references: image(id)
+              - column:
+                  name: username
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: integer
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: ads
+            columns:
+              - column:
+                  name: ad_id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image_ad_id
+                  type: varchar(255)
+                  constraints:
+                    foreignKeyName: image_ad_id
+                    references: image_ad(id)
+              - column:
+                  name: user_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: users_id
+                    references: users(id)
+                    nullable: false
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: comment_id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: users_id
+                    references: users(id)
+                    nullable: false
+              - column:
+                  name: ad_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: ad_id
+                    references: ads(ad_id)
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

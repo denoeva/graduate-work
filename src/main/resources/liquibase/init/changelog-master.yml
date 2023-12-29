@@ -1,0 +1,13 @@
+databaseChangeLog:
+#  - include:
+#      file: liquibase/init/src/main/resources/liquibase/init/create_comment.yml
+#  - include:
+#      file: liquibase/init/src/main/resources/liquibase/init/create_image.yml
+#  - include:
+#      file: liquibase/init/src/main/resources/liquibase/init/create_users.yml
+#  - include:
+#      file: liquibase/init/src/main/resources/liquibase/init/create-imageAd.yml
+#  - include:
+#      file: liquibase/init/src/main/resources/liquibase/init/create_ad.yml
+  - include:
+      file: liquibase/init/src/main/resources/liquibase/init/create-tables.yml
